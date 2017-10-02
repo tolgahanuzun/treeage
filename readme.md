@@ -2,7 +2,7 @@
 Age estimation from tree rings.
 
 ## How to use?
-[Tree Age](46.101.211.40) Click me!
+[Tree Age](http://46.101.211.40) Click me!
 
 ## Install
 - TODO
@@ -10,8 +10,9 @@ Age estimation from tree rings.
 ### Orginal Image
 ![resim](orginal.jpg)
 
-### processed picture
-![resim](orginal-age.jpg)
+### Processed picture
+![resim](data.png)
+
 
 ## The technologies I use
 - Bootle
