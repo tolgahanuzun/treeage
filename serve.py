@@ -1,7 +1,5 @@
 from __future__ import unicode_literals
 from bottle import Bottle, request, response
-from bottle import route
-from bottle import static_file
 from app import treeage
 
 app = Bottle()

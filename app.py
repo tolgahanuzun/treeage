@@ -7,10 +7,6 @@ CLIENT_ID = "youkey"
 PATH = "./"
 
 def treeage(imageurl):
-    """
-    Yas halkalari hesaplama.
-    Resmin konumunu alir, imgura yukler ve geriye halka sayisiyla link doner.
-    """
     img = cv2.imread(imageurl, 0)
     img = cv2.medianBlur(img, 1)
     th2 = cv2.adaptiveThreshold(img, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 11, 2)
@@ -18,51 +14,50 @@ def treeage(imageurl):
     circles = cv2.HoughCircles(th2, cv2.HOUGH_GRADIENT, 50, 2000)
     circles = np.uint16(np.around(circles))
 
-    # orta noktasini buluyoruz.
+    # center point
     for i in circles[0, :]:
         cv2.circle(cimg, (i[0], i[1]), 2, (0, 0, 255), 3)
 
-    #Resmi 4e boluyoruz.
-    draws1 = cimg[0:circles[0][0][1], 0:circles[0][0][0]]
-    draws1 = cv2.flip(draws1, 1)
-    draws1 = cv2.flip(draws1, 0)
+    draw1 = cimg[0:circles[0][0][1], 0:circles[0][0][0]]
+    draw1 = cv2.flip(draw1, 1)
+    draw1 = cv2.flip(draw1, 0)
 
-    draws2 = cimg[circles[0][0][1]:, 0:circles[0][0][0]]
-    draws2 = cv2.flip(draws2, 1)
+    draw2 = cimg[circles[0][0][1]:, 0:circles[0][0][0]]
+    draw2 = cv2.flip(draw2, 1)
 
-    draws3 = cimg[0:circles[0][0][1], circles[0][0][0]:]
-    draws3 = cv2.flip(draws3, 0)
+    draw3 = cimg[0:circles[0][0][1], circles[0][0][0]:]
+    draw3 = cv2.flip(draw3, 0)
 
-    draws4 = cimg[circles[0][0][1]:, circles[0][0][0]:]
+    draw4 = cimg[circles[0][0][1]:, circles[0][0][0]:]
 
-    drawss = [draws1, draws2, draws3, draws4]
-    sayac = 0
+    draws = [draw1, draw2, draw3, draw4]
+    counter = 0
 
-    for draws in drawss:
-        height, width = draws.shape[:2]
+    for draw in draws:
+        height, width = draw.shape[:2]
 
         ages = height
-        oran = width/height
+        rate = width/height
         if height > width:
             ages = width
-            oran = height/width
+            rate = height/width
 
         temp1 = None
         temp2 = None
 
         for x in range(ages):
             try:
-                if draws[x, int(x*oran)][0] == 0 and not temp1 == 0 and not temp2 == 0:
-                    sayac = sayac+1
-                    draws[x, int(x*oran)] = [0, 0, 255]
+                if draw[x, int(x*rate)][0] == 0 and not temp1 == 0 and not temp2 == 0:
+                    counter = counter + 1
+                    draw[x, int(x*rate)] = [0, 0, 255]
 
-                temp1 = draws[x, int(x*oran)][0]
-                temp2 = draws[x-1, int(x*oran)-1][0]
+                temp1 = draw[x, int(x*rate)][0]
+                temp2 = draw[x-1, int(x*rate)-1][0]
             except:
                 pass
         for x in range(ages):
             try:
-                draws[x, int(x*oran)] = [0, 0, 255]
+                draw[x, int(x*rate)] = [0, 0, 255]
             except:
                 pass
 
@@ -72,21 +67,5 @@ def treeage(imageurl):
     im = pyimgur.Imgur(CLIENT_ID)
     uploaded_image = im.upload_image(agename, title="Uploaded with PyImgur")
     print(uploaded_image.title)
-    uploaded_image.link
-    
-    return int(sayac/4), uploaded_image.link
 
-    # cv2.imshow('detected circle1',draws1)
-    # cv2.imshow('detected circle2',draws2)
-    # cv2.imshow('detected circle3',draws3)
-    # cv2.imshow('detected circle4',draws4)
-
-    #import ipdb; ipdb.set_trace()
-
-    #for x in range(20):
-        #draws[x,x] =[0,0,255]
-    #cv2.imshow('detected circles',draws)
-
-
-    # cv2.waitKey(0)
-    # cv2.destroyAllWindows()
+    return int(counter/4), uploaded_image.link
