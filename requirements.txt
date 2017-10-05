@@ -1,0 +1,4 @@
+opencv-python==3.3.0.10
+numpy==1.13.1
+bottle==0.12.13
+pyimgur==0.6.0

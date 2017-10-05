@@ -1,11 +1,15 @@
 # Tree Age
-Age estimation from tree rings.
-
-## How to use?
-[Tree Age](http://46.101.211.40) Click me!
+It was simply created to measure tree age. The picture was processed with Opencv. Image was uploaded with Bottle simple web library. The project needs theoretical support to make it better. I do not have theoretical knowledge.
 
 ## Install
-- TODO
+    $ git clone https://github.com/tolgahanuzun/treeage
+    $ cd treeage
+    $ virtualenv -p python3 .
+    $ source bin/activate
+    $ pip install -r requirements.txt
+ And
+    
+    $ python serve.py
 
 ### Orginal Image
 ![resim](orginal.jpg)
