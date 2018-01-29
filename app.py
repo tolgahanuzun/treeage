@@ -1,70 +1,42 @@
-import cv2
-import numpy as np
-import pyimgur
+import os
+from flask import Flask, request, redirect, url_for, render_template
+from werkzeug import secure_filename
 
+from image import treeage
 
-CLIENT_ID = "e016bbee6d687a4"
+UPLOAD_FOLDER = './img'
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 
-def treeage(imageurl):
-    img = cv2.imread(imageurl, 0)
-    img = cv2.medianBlur(img, 1)
-    th2 = cv2.adaptiveThreshold(img, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 11, 2)
-    cimg = cv2.cvtColor(th2, cv2.COLOR_GRAY2BGR)
-    circles = cv2.HoughCircles(th2, cv2.HOUGH_GRADIENT, 50, 2000)
-    circles = np.uint16(np.around(circles))
+app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-    # center point
-    for i in circles[0, :]:
-        cv2.circle(cimg, (i[0], i[1]), 2, (0, 0, 255), 3)
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
-    draw1 = cimg[0:circles[0][0][1], 0:circles[0][0][0]]
-    draw1 = cv2.flip(draw1, 1)
-    draw1 = cv2.flip(draw1, 0)
+@app.route("/", methods=['GET', 'POST'])
+def index():
+    if request.method == 'GET':
+        return render_template('index.html')
 
-    draw2 = cimg[circles[0][0][1]:, 0:circles[0][0][0]]
-    draw2 = cv2.flip(draw2, 1)
+    if request.method == 'POST':
+        file = request.files['file']
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file_url = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(file_url)
+        else:
+            return render_template('index.html', data={'error':'Are you sure this is a picture file?'})            
+            
+        try:
+            count, link = treeage(file_url)
+            return render_template('index.html', data={'result':link, 'count':count})
+        except:
+            return render_template('index.html', data={'error':'''Oh, no! Can you report the scenario and the file to me?
+        https://github.com/tolgahanuzun/treeage'''})
 
-    draw3 = cimg[0:circles[0][0][1], circles[0][0][0]:]
-    draw3 = cv2.flip(draw3, 0)
+    return redirect(url_for('index'))
+        
 
-    draw4 = cimg[circles[0][0][1]:, circles[0][0][0]:]
-
-    draws = [draw1, draw2, draw3, draw4]
-    counter = 0
-
-    for draw in draws:
-        height, width = draw.shape[:2]
-
-        ages = height
-        rate = width/height
-        if height > width:
-            ages = width
-            rate = height/width
-
-        temp1 = None
-        temp2 = None
-
-        for x in range(ages):
-            try:
-                if draw[x, int(x*rate)][0] == 0 and not temp1 == 0 and not temp2 == 0:
-                    counter = counter + 1
-                    draw[x, int(x*rate)] = [0, 0, 255]
-
-                temp1 = draw[x, int(x*rate)][0]
-                temp2 = draw[x-1, int(x*rate)-1][0]
-            except:
-                pass
-        for x in range(ages):
-            try:
-                draw[x, int(x*rate)] = [0, 0, 255]
-            except:
-                pass
-
-    agename = '{}-age.jpg'.format(imageurl.split('.')[0])
-    cv2.imwrite(agename, cimg)
-
-    im = pyimgur.Imgur(CLIENT_ID)
-    uploaded_image = im.upload_image(agename, title="Uploaded with PyImgur")
-    print(uploaded_image.title)
-
-    return int(counter/4), uploaded_image.link
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', port=5001, debug=True)
