@@ -3,7 +3,7 @@ import numpy as np
 import pyimgur
 
 
-CLIENT_ID = "ccc"
+CLIENT_ID = "e016bbee6d687a4"
 
 def treeage(imageurl):
     img = cv2.imread(imageurl, 0)
