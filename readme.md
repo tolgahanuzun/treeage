@@ -9,17 +9,17 @@ It was simply created to measure tree age. The picture was processed with Opencv
     $ pip install -r requirements.txt
  And
     
-    $ python serve.py
+    $ python server.py
 
 ### Orginal Image
-![resim](orginal.jpg)
+![resim](img/orginal.jpg)
 
 ### Processed picture
-![resim](data.png)
+![resim](img/-age.jpg)
 
 
 ## The technologies I use
-- Bootle
+- Flask
 - Opencv2
 - Numpy
 - Imgur

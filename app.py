@@ -3,8 +3,7 @@ import numpy as np
 import pyimgur
 
 
-CLIENT_ID = "youkey"
-PATH = "./"
+CLIENT_ID = "ccc"
 
 def treeage(imageurl):
     img = cv2.imread(imageurl, 0)

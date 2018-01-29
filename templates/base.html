@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/kube/6.5.2/css/kube.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
+    <title>Tree Age Counter</title>
+</head>
+<body>
+<div class="row align-center">
+    <div class="col col-6">
+        <fieldset>
+        <legend>Tree Age Counter</legend>
+        <p>Upload a picture of a tree body. </p>
+        
+        <form method="POST" enctype="multipart/form-data" action="/">
+        <div class="row align-center">
+            <div class="form-item">
+                    <input type="file" name="file" />
+            </div>
+        </div>
+        <div class="row align-center">
+            <div class="form-item align-center">
+                <button id="save" >Execute</button> 
+            </div>
+        </div>
+        </form>
+    </fieldset>
+
+        
+    <div id='slide'>
+        
+        {% block content %}{% endblock %}
+    </div>
+    
+</div>
+    
+ </body>
+</html>

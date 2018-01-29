@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% if data %}
+
+{% if data.result %}
+
+<h2>{{data.count}}</h2>
+<img src="{{data.result}}" alt="">
+
+{% endif %}
+
+{% if data.error %}
+<h2> 
+{{data.error}}
+</h2> 
+
+{% endif %}
+
+
+{% else %}
+
+{% endif %}
+{% endblock %}
